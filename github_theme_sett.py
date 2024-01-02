@@ -8,7 +8,7 @@ def rgbToHex(rgb):
 ctypes.windll.shcore.SetProcessDpiAwareness(True)
 
 """
-github dark theme
+github theme
 ======================================================================
 """
 
