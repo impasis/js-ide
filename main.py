@@ -12,6 +12,46 @@ from github_dark_theme_sett import *
 import re
 
 
+class ThemeMultiButton:
+    def __init__(self, text, x, y, win: Tk, btn_width, btn_height):
+        self.text = text
+        self.x = x
+        self.y = y
+        self.win = win
+        self.btn_width = btn_width
+        self.btn_height = btn_height
+        self.multi_button = Menubutton(self.win,
+                                       text=self.text,
+                                       relief="flat")
+        self.menu = Menu(self.multi_button, tearoff=False)
+        self.themes = {"Dark (Visual Studio)": vscode_colors,
+                       "Light (Visual Studio)": vscode_light_colors,
+                       "Monokai": monokai_colors,
+                       "Dark (GitHub)": github_dark_colors,
+                       "Light (GitHub)": github_colors}
+
+    def change_theme(self, theme):
+        __editor = Editor(self.win, theme)
+        app.editor.main_entry.destroy()
+        app.editor.label.destroy()
+        app.editor = __editor
+        app.editor.draw()
+
+    def show(self):
+
+        self.multi_button.place(x=self.x, y=self.y)
+        self.multi_button.configure(menu=self.menu)
+        # self.multi_button.config(width=self.btn_width, height=self.btn_height)
+        options = ["Dark (Visual Studio)",
+                   "Light (Visual Studio)",
+                   "Monokai",
+                   "Dark (GitHub)",
+                   "Light (GitHub)"]
+
+        for el in options:
+            self.menu.add_command(label=el, command=lambda opt=el: self.change_theme(self.themes[opt]))
+
+
 class Main:
     def __init__(self, width, height, title, screen, local_editor, local_name):
         self.width = width
@@ -25,6 +65,7 @@ class Main:
         self.cmd_entry = None
         self.cmd_directory = None
         self.prev_text = ""
+        self.is_draw = True
 
     def open_file(self, event=None):
         filepath = filedialog.askopenfilename()
@@ -39,7 +80,7 @@ class Main:
                 text = file.read()
                 self.editor.main_entry.delete("1.0", END)
                 self.editor.main_entry.insert("1.0", text)
-            self.syntax(js_syntax_vscode)
+            self.syntax(js_syntax_monokai)
 
     # Глобальное сохранение
     def save_file(self, event=None):
@@ -98,6 +139,7 @@ class Main:
             self.screen.title(self.title)
             self.screen.state("zoomed")
             self.screen.geometry(f"{self.width}x{self.height}")
+            choose_theme.show()
             self.editor.draw()
             self.editor.main_entry.bind('<KeyRelease>', self.syntax)
 
@@ -107,12 +149,12 @@ class Main:
 win = Tk()
 editor = Editor(win, monokai_colors)
 name = ""
+choose_theme = ThemeMultiButton("Color Theme", 2, 0, win, 12, 1)
 
-_w = win.winfo_screenwidth()  # размер  по горизонтали
+
+_w = win.winfo_screenwidth()  # размер по горизонтали
 _h = win.winfo_screenheight()  # размер по вертикали
+app = Main(_w, _h, "???", win, editor, name)
 
 if __name__ == "__main__":
-    app = Main(_w, _h, "???", win, editor, name)
     app.run("OK")
-
-

@@ -14,6 +14,8 @@ github dark theme
 
 monokai_colors = {
     "keywords": rgbToHex((86, 216, 238)),
+    "keywords_red": rgbToHex((249, 36, 114)),
+    "keywords_orange": rgbToHex((250, 150, 34)),
     "comments": rgbToHex((117, 113, 94)),
     "string": rgbToHex((229, 216, 112)),
     "numbers": rgbToHex((174, 129, 255)),
@@ -25,14 +27,20 @@ monokai_colors = {
 
 js_syntax_monokai = [
     [
+        r"\b(var|let|const|with|function|class)\b",
+        monokai_colors["keywords"]
+    ],
+    [
+        r"\b(this|super)\b", monokai_colors["keywords_orange"]
+    ],
+    [
         r"\b(new|as|for|in|while|do|break|return|continue|switch|case|default|if|else|throw|try|catch|finally|yield"
-        r"|await "
-        r"|async|this|of|static|export|import|debugger|extends|super|var|let|const|with|function|class"
-        r"|null|NaN|Infinity|undefined|of)\b",
-        monokai_colors["keywords"]],
+        r"|await|async|of|static|export|import|debugger|extends|with)\b",
+        monokai_colors["keywords_red"]
+    ],
     [r"\b\d+(\.\d+)?\b", monokai_colors["numbers"]],
     [r"/\*.*?\*/", monokai_colors["comments"]],
-    [r"\b(true|false)\b", monokai_colors["numbers"]],
+    [r"\b(true|false|null|NaN|Infinity|undefined)\b", monokai_colors["numbers"]],
     ['".*?"', monokai_colors["string"]],
     ['\'.*?\'', monokai_colors["string"]],
     ['//.*?$', monokai_colors["comments"]],
