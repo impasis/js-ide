@@ -1,7 +1,7 @@
 from tkinter import *
-from tkinter import filedialog
 from run_js import run_js
 from editor import Editor
+from files import FileMultiButton
 
 from vscode_theme_sett import *
 from vscode_light_theme_sett import *
@@ -73,43 +73,6 @@ class Main:
         self.prev_text = ""
         self.main_theme = js_syntax_vscode
 
-    def open_file(self, event=None):
-        filepath = filedialog.askopenfilename()
-        if filepath != "":
-            self.name = filepath
-            st = filepath.split('/')
-            new = ''
-            for el in st[:-1]:
-                new += el + '\\'
-            self.cmd_directory = new
-            with open(filepath, "r") as file:
-                text = file.read()
-                self.editor.main_entry.delete("1.0", END)
-                self.editor.main_entry.insert("1.0", text)
-            self.syntax(self.main_theme)
-
-    # Глобальное сохранение
-    def save_file(self, event=None):
-        filepath = filedialog.asksaveasfilename()
-        if filepath != "":
-            st = filepath.split('/')
-            new = ''
-            for el in st[:-1]:
-                new += el + '\\'
-            self.cmd_directory = new
-
-            self.name = filepath
-
-            text = self.editor.main_entry.get("1.0", END)
-            with open(filepath, "w") as file:
-                file.write(text)
-
-    def fast_save_file(self, event=None):
-        if self.name != "":
-            text = self.editor.main_entry.get("1.0", END)
-            with open(self.name, "w") as file:
-                file.write(text)
-
     def syntax(self, event=None):
         if self.editor.main_entry.get('1.0', END) == self.prev_text:
             return
@@ -146,6 +109,7 @@ class Main:
             self.screen.state("zoomed")
             self.screen.geometry(f"{self.width}x{self.height}")
             choose_theme.show()
+            file_multi_button.show()
             self.editor.draw()
             self.editor.main_entry.bind('<KeyRelease>', self.syntax)
 
@@ -155,7 +119,8 @@ class Main:
 win = Tk()
 editor = Editor(win, vscode_colors)
 name = ""
-choose_theme = ThemeMultiButton("Color Theme", 2, 0, win, 12, 1)
+choose_theme = ThemeMultiButton("Color Theme", 40, 0, win, 12, 1)
+file_multi_button = FileMultiButton(Main, "File", 2, 0, win)
 
 _w = win.winfo_screenwidth()  # размер по горизонтали
 _h = win.winfo_screenheight()  # размер по вертикали
