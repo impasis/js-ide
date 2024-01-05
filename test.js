@@ -1,9 +1,7 @@
 function js_test(x)
 {
 	var y = 10;
-	const s = "Hello, Test!";
-
-	console.log(s);
+	var s = "Hello, Test!";
 	console.log(x, y);
 }
 

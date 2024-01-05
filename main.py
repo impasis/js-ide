@@ -42,6 +42,12 @@ class ThemeMultiButton:
         app.editor.label.destroy()
         app.editor = __editor
         app.editor.draw()
+        with open(app.name) as file:
+            content = file.read()
+            app.editor.main_entry.insert("1.0", content)
+
+        app.prev_text += " "
+        app.syntax()
         app.editor.main_entry.bind('<KeyRelease>', app.syntax)
 
     def show(self):
@@ -120,11 +126,11 @@ win = Tk()
 editor = Editor(win, vscode_colors)
 name = ""
 choose_theme = ThemeMultiButton("Color Theme", 40, 0, win, 12, 1)
-file_multi_button = FileMultiButton(Main, "File", 2, 0, win)
 
 _w = win.winfo_screenwidth()  # размер по горизонтали
 _h = win.winfo_screenheight()  # размер по вертикали
 app = Main(_w, _h, "???", win, editor, name)
+file_multi_button = FileMultiButton(app, "File", 2, 0)
 
 if __name__ == "__main__":
     app.run("OK")

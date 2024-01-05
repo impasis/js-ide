@@ -3,12 +3,12 @@ from tkinter import filedialog
 
 
 class FileMultiButton:
-    def __init__(self, __class, text, x, y, win):
+    def __init__(self, __class, text, x, y):
         self.__class = __class
         self.text = text
         self.x = x
         self.y = y
-        self.win = win
+        self.win = __class.screen
         self.multi_button = Menubutton(self.win,
                                        text=self.text,
                                        relief="flat")
@@ -59,7 +59,9 @@ class FileMultiButton:
 
         # HOT KEYS - TESTS
 
-        for el in options:
-            self.menu.add_command(label=el)
+        self.menu.add_command(label=options[0])
+        self.menu.add_command(label=options[1], command=self.open_file)
+        self.menu.add_command(label=options[2], command=self.fast_save_file)
+        self.menu.add_command(label=options[3], command=self.save_file)
 
-            # command=lambda opt=el: self.change_theme(opt)
+        # command=lambda opt=el: self.change_theme(opt)
