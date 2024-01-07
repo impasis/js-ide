@@ -13,21 +13,24 @@ class FileMultiButton:
                                        text=self.text,
                                        relief="flat")
         self.menu = Menu(self.multi_button, tearoff=False)
+        self.type = None
 
     def open_file(self, event=None):
         filepath = filedialog.askopenfilename()
         if filepath != "":
             self.__class.name = filepath
-            st = filepath.split('/')
-            new = ''
-            for el in st[:-1]:
-                new += el + '\\'
-            self.__class.cmd_directory = new
+            st = filepath.split('/')[-1].split('.')
             with open(filepath, "r") as file:
                 text = file.read()
                 self.__class.editor.main_entry.delete("1.0", END)
                 self.__class.editor.main_entry.insert("1.0", text)
-            self.__class.syntax(self.__class.main_theme)
+
+            if len(st) == 2:
+                self.type = st[-1]
+                if st[-1] == "js":
+                    self.__class.editor.main_entry.bind('<KeyRelease>', self.__class.js_syntax)
+                    self.__class.prev_text += " "
+                    self.__class.js_syntax(self.__class.js_main_theme)
 
     # Глобальное сохранение
     def save_file(self, event=None):

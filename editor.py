@@ -11,9 +11,7 @@ class Editor:
                                insertbackground=self.theme["txt_color"],
                                relief=FLAT, borderwidth=30, tabs=56)
         self.main_entry.tag_configure('sel', background=self.theme['sel_color'])
-
-    def printf(self):
-        print(self.theme)
+        self.__class = None
 
     def draw(self):
         self.label.pack()

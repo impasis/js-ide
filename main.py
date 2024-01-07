@@ -1,15 +1,4 @@
-from tkinter import *
-from run_js import run_js
-from editor import Editor
-from files import FileMultiButton
-
-from vscode_theme_sett import *
-from vscode_light_theme_sett import *
-from monokai_theme_sett import *
-from github_theme_sett import *
-from github_dark_theme_sett import *
-
-import re
+from includes import *
 
 
 class ThemeMultiButton:
@@ -36,7 +25,7 @@ class ThemeMultiButton:
                               "Light (GitHub)": js_syntax_github}
 
     def change_theme(self, theme):
-        app.main_theme = self.themes_syntax[theme]
+        app.js_main_theme = self.themes_syntax[theme]
         __editor = Editor(self.win, self.themes[theme])
         app.editor.main_entry.destroy()
         app.editor.label.destroy()
@@ -47,8 +36,8 @@ class ThemeMultiButton:
             app.editor.main_entry.insert("1.0", content)
 
         app.prev_text += " "
-        app.syntax()
-        app.editor.main_entry.bind('<KeyRelease>', app.syntax)
+        app.js_syntax()
+        app.editor.main_entry.bind('<KeyRelease>', app.js_syntax)
 
     def show(self):
         self.multi_button.place(x=self.x, y=self.y)
@@ -72,14 +61,13 @@ class Main:
         self.screen = screen
         self.editor = local_editor
         self.name = local_name
+        self.js_main_theme = js_syntax_vscode
         self.cmd_win = None
-        self.command_text = ""
         self.cmd_entry = None
         self.cmd_directory = None
         self.prev_text = ""
-        self.main_theme = js_syntax_vscode
 
-    def syntax(self, event=None):
+    def js_syntax(self, event=None):
         if self.editor.main_entry.get('1.0', END) == self.prev_text:
             return
 
@@ -87,15 +75,15 @@ class Main:
             self.editor.main_entry.tag_remove(st, '1.0', 'end')
 
         i = 0
-        for syms, color in self.main_theme:
-            for start, end in self.search(syms):
+        for syms, color in self.js_main_theme:
+            for start, end in self.js_search(syms):
                 self.editor.main_entry.tag_add(f"{i}", start, end)
                 self.editor.main_entry.tag_config(f"{i}", foreground=color)
 
                 i += 1
         self.prev_text = self.editor.main_entry.get('1.0', END)
 
-    def search(self, syms, groupid=0):
+    def js_search(self, syms, groupid=0):
         matches = []
 
         text = self.editor.main_entry.get('1.0', END).splitlines()
@@ -117,19 +105,22 @@ class Main:
             choose_theme.show()
             file_multi_button.show()
             self.editor.draw()
-            self.editor.main_entry.bind('<KeyRelease>', self.syntax)
+
+            if file_multi_button.type == "js":
+                self.editor.main_entry.bind('<KeyRelease>', self.js_syntax)
 
             self.screen.mainloop()
 
 
 win = Tk()
-editor = Editor(win, vscode_colors)
 name = ""
+editor = Editor(win, vscode_colors)
 choose_theme = ThemeMultiButton("Color Theme", 40, 0, win, 12, 1)
 
 _w = win.winfo_screenwidth()  # размер по горизонтали
 _h = win.winfo_screenheight()  # размер по вертикали
 app = Main(_w, _h, "???", win, editor, name)
+editor.__class = app
 file_multi_button = FileMultiButton(app, "File", 2, 0)
 
 if __name__ == "__main__":

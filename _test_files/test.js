@@ -9,3 +9,4 @@ function js_test(x)
 var x = 123131231238123;
 
 js_test(x);
+
