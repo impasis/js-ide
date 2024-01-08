@@ -1,5 +1,4 @@
 from tkinter import *
-from run_js import run_js
 from editor import Editor
 from files import FileMultiButton
 
@@ -8,5 +7,7 @@ from cthemes.js.js_vscode_light_theme_sett import *
 from cthemes.js.js_monokai_theme_sett import *
 from cthemes.js.js_github_theme_sett import *
 from cthemes.js.js_github_dark_theme_sett import *
+
+from cthemes.html.html_monokai_theme_sett import *
 
 import re

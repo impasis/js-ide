@@ -18,7 +18,14 @@ class FileMultiButton:
     def open_file(self, event=None):
         filepath = filedialog.askopenfilename()
         if filepath != "":
+            try:
+                with open(filepath, "r") as file:
+                    file.read()
+            except UnicodeDecodeError:
+                return
+
             self.__class.name = filepath
+            self.__class.screen.title(filepath)
             st = filepath.split('/')[-1].split('.')
             with open(filepath, "r") as file:
                 text = file.read()
@@ -30,7 +37,7 @@ class FileMultiButton:
                 if st[-1] == "js":
                     self.__class.editor.main_entry.bind('<KeyRelease>', self.__class.js_syntax)
                     self.__class.prev_text += " "
-                    self.__class.js_syntax(self.__class.js_main_theme)
+                    self.__class.js_syntax(self.__class.main_theme)
 
     # Глобальное сохранение
     def save_file(self, event=None):
@@ -43,6 +50,7 @@ class FileMultiButton:
             self.__class.cmd_directory = new
 
             self.__class.name = filepath
+            self.__class.screen.title(filepath)
 
             text = self.__class.editor.main_entry.get("1.0", END)
             with open(filepath, "w") as file:
@@ -58,13 +66,19 @@ class FileMultiButton:
         self.multi_button.place(x=self.x, y=self.y)
         self.multi_button.configure(menu=self.menu)
 
-        options = ["New File", "Open File", "Save", "Save As"]
-
-        # HOT KEYS - TESTS
+        options = ["New File  (Ctrl+N)",
+                   "Open File  (Ctrl+O)",
+                   "Save  (Ctrl+S)",
+                   "Save As  (Ctrl+G)"]
 
         self.menu.add_command(label=options[0])
         self.menu.add_command(label=options[1], command=self.open_file)
         self.menu.add_command(label=options[2], command=self.fast_save_file)
         self.menu.add_command(label=options[3], command=self.save_file)
+
+        # ENG.
+        self.__class.screen.bind("<Control-s>", self.fast_save_file)
+        self.__class.screen.bind("<Control-g>", self.save_file)
+        self.__class.screen.bind("<Control-o>", self.open_file)
 
         # command=lambda opt=el: self.change_theme(opt)

@@ -25,18 +25,18 @@ class ThemeMultiButton:
                               "Light (GitHub)": js_syntax_github}
 
     def change_theme(self, theme):
-        app.js_main_theme = self.themes_syntax[theme]
+        app.main_theme = self.themes_syntax[theme]
         __editor = Editor(self.win, self.themes[theme])
+        content = app.editor.main_entry.get('1.0', END)
         app.editor.main_entry.destroy()
         app.editor.label.destroy()
         app.editor = __editor
         app.editor.draw()
-        with open(app.name) as file:
-            content = file.read()
-            app.editor.main_entry.insert("1.0", content)
+        app.editor.main_entry.insert("1.0", content)
 
         app.prev_text += " "
-        app.js_syntax()
+        if file_multi_button.type == "js":
+            app.js_syntax()
         app.editor.main_entry.bind('<KeyRelease>', app.js_syntax)
 
     def show(self):
@@ -61,7 +61,7 @@ class Main:
         self.screen = screen
         self.editor = local_editor
         self.name = local_name
-        self.js_main_theme = js_syntax_vscode
+        self.main_theme = themes["vscode"]
         self.cmd_win = None
         self.cmd_entry = None
         self.cmd_directory = None
@@ -75,7 +75,7 @@ class Main:
             self.editor.main_entry.tag_remove(st, '1.0', 'end')
 
         i = 0
-        for syms, color in self.js_main_theme:
+        for syms, color in self.main_theme:
             for start, end in self.js_search(syms):
                 self.editor.main_entry.tag_add(f"{i}", start, end)
                 self.editor.main_entry.tag_config(f"{i}", foreground=color)
@@ -116,6 +116,14 @@ win = Tk()
 name = ""
 editor = Editor(win, vscode_colors)
 choose_theme = ThemeMultiButton("Color Theme", 40, 0, win, 12, 1)
+
+themes = {
+    "monokai": js_syntax_monokai,
+    "vscode": js_syntax_vscode,
+    "light_vscode": js_syntax_vscode_light,
+    "github": js_syntax_github,
+    "github_dark": js_syntax_github_dark
+}
 
 _w = win.winfo_screenwidth()  # размер по горизонтали
 _h = win.winfo_screenheight()  # размер по вертикали
